@@ -2,7 +2,7 @@ package hong.mason.draggablelayout
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,11 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         draggableLayout.addCallback(object : DraggableLayout.Callback {
             override fun onExpanded() {
-                Toast.makeText(baseContext, "onExpanded", Toast.LENGTH_SHORT).show()
+                buttonExpand.visibility = View.GONE
+                buttonCollapse.visibility = View.VISIBLE
             }
 
             override fun onCollapsed() {
-                Toast.makeText(baseContext, "onCollapsed", Toast.LENGTH_SHORT).show()
+                buttonExpand.visibility = View.VISIBLE
+                buttonCollapse.visibility = View.GONE
             }
         })
     }

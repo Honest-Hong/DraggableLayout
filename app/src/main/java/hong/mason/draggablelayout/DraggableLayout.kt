@@ -22,6 +22,11 @@ class DraggableLayout : ViewGroup {
     private var state = State.EXPANDED
     private var callbacks : MutableList<Callback> = ArrayList()
 
+    interface Callback {
+        fun onExpanded()
+        fun onCollapsed()
+    }
+
     constructor(context: Context) : super(context) {
         init(context)
     }
@@ -75,6 +80,7 @@ class DraggableLayout : ViewGroup {
             target.layout(left, measuredHeight - target.measuredHeight, right, measuredHeight)
         }
         isFirstLayout = false
+        updateDimOpacity()
     }
 
     override fun onFinishInflate() {
@@ -161,6 +167,13 @@ class DraggableLayout : ViewGroup {
         }
     }
 
+    private fun updateDimOpacity() {
+        val currentY = target.top - (measuredHeight - target.measuredHeight)
+        val totalY = target.measuredHeight
+        val ratio = 1F - currentY.toFloat() / totalY.toFloat()
+        dimView.alpha = ratio
+    }
+
     inner class InternalCallback : ViewDragHelper.Callback() {
         override fun tryCaptureView(child: View?, pointerId: Int): Boolean = true
 
@@ -177,13 +190,20 @@ class DraggableLayout : ViewGroup {
             }
         }
 
+        override fun onViewPositionChanged(changedView: View?, left: Int, top: Int, dx: Int, dy: Int) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy)
+            if (changedView == target) {
+                updateDimOpacity()
+            }
+        }
+
         override fun onViewReleased(releasedChild: View?, xvel: Float, yvel: Float) {
-            if (target.top < measuredHeight - target.measuredHeight / 2) {
+            state = if (target.top < measuredHeight - target.measuredHeight / 2) {
                 smoothSlideTo(0, measuredHeight - target.measuredHeight)
-                state = State.EXPANDED
+                State.EXPANDED
             } else {
                 smoothSlideTo(0, measuredHeight)
-                state = State.COLLAPSED
+                State.COLLAPSED
             }
         }
 
@@ -196,16 +216,12 @@ class DraggableLayout : ViewGroup {
         }
     }
 
-    interface Callback {
-        fun onExpanded()
-        fun onCollapsed()
-    }
-
     private enum class State {
         EXPANDED, COLLAPSED
     }
 
     companion object {
+        val TAG = "DraggableLayout"
         val DEFAULT_DIM_COLOR = 0x88000000.toInt()
     }
 }

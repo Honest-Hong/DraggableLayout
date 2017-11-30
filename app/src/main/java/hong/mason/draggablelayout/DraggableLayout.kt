@@ -45,11 +45,11 @@ class DraggableLayout : ViewGroup {
     }
 
     fun expand() {
-        smoothSlideTo(0, measuredHeight - target.measuredHeight)
+        post { smoothSlideTo(0, measuredHeight - target.measuredHeight) }
     }
 
     fun collapse() {
-        smoothSlideTo(0, measuredHeight)
+        post { smoothSlideTo(0, measuredHeight) }
     }
 
     fun addCallback(callback: Callback) {

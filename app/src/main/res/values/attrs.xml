@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DraggableLayout">
+        <attr name="dimColor" format="color" />
+        <attr name="state" format="enum">
+            <enum name="expanded" value="0" />
+            <enum name="collapsed" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
